@@ -6,8 +6,8 @@ export default class WamAudioLoopBrowser extends HTMLElement {
     constructor() {
         super();
         this.audioData = null;
-        // this.URL_SERVER = "https://wam-bank.i3s.univ-cotedazur.fr";
-        this.URL_SERVER = "http://localhost:6002";
+         this.URL_SERVER = "https://wam-bank.i3s.univ-cotedazur.fr";
+        //this.URL_SERVER = "http://localhost:6002";
         this.attachShadow({ mode: "open" });
     }
 
@@ -87,7 +87,7 @@ export default class WamAudioLoopBrowser extends HTMLElement {
           }
 
           #mainWrapper {
-            width: 300px;
+            min-width: 280px;
             height: 100vh;
             max-height: 100vh;
             font-size: 12px;
@@ -197,23 +197,22 @@ export default class WamAudioLoopBrowser extends HTMLElement {
             cursor: pointer;
           }
 
-            .folder-icon {
-            margin-left: 0.5rem;
-            font-size: 18px;
-            }
+        .folder-icon {
+        margin-left: 0.5rem;
+        font-size: 18px;
+        }
 
-          .audio-file-item {
-            background-color: var(--secondary-bg-color);
-            flex-grow: 1;
-            white-space: nowrap;
-            text-overflow: ellipsis;
-            border-radius: 5px;
-            padding: 0.1rem;
+        .audio-file-item {
             display: flex;
             align-items: center;
             gap: 0.5rem;
+            padding: 0.1rem;
             margin-bottom: 0.5rem;
-          }
+            background-color: var(--secondary-bg-color);
+            border-radius: 5px;
+            flex-grow: 1;
+            max-width: 275px;
+        }
 
           .play-btn,
           .favourite-btn,
@@ -368,6 +367,14 @@ export default class WamAudioLoopBrowser extends HTMLElement {
                 console.error("Error fetching audio data:", error);
             });
     }
+
+    resizeItems(newWidth: number) {
+        const audioItems = this.shadowRoot.querySelectorAll('.audio-file-item');
+        audioItems.forEach((item: Element) => {
+            (item as HTMLElement).style.maxWidth = `${newWidth -35}px`;
+        });
+    }
+    
     handleSearchAndFilter() {
         if (this.searchTimeout) {
             clearTimeout(this.searchTimeout);
@@ -412,7 +419,16 @@ export default class WamAudioLoopBrowser extends HTMLElement {
         }
 
         this.attachPlayButtonEventListeners();
+        this.attachDragListeners();
     }
+
+    attachDragListeners() {
+        this.shadowRoot.querySelectorAll(".audio-file-item").forEach((audioLoopDiv) => {
+            console.log("audioLoopDiv");
+            audioLoopDiv.addEventListener("dragstart", this.dragHandler);
+        });
+    }
+
     attachPlayButtonEventListeners(): void {
         const playButtons = this.shadowRoot.querySelectorAll('.play-btn');
 

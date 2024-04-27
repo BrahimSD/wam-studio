@@ -148,11 +148,20 @@ body {
 
 #audio-loop-browser{
     width: 300px;
+    max-width: 500px;
     display: none;
     position: relative;
     font-size: 12px;
     height: 100%;
     transform: translateZ(0);
+}
+
+#resizer{
+    position: absolute;
+    user-select: none;
+    width: 6px;
+    height: 100%;
+    cursor: ew-resize;
 }
 
 #editor-content {

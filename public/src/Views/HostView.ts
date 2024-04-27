@@ -4,7 +4,6 @@ import TempoSelectorElement from "../Components/TempoSelectorElement";
 import TimeSignatureSelectorElement from "../Components/TimeSignatureSelectorElement";
 import AudioLoopBrowser from "../Components/WamAudioLoopBrowser";
 import Metronome from "../Components/MetronomeComponent";
-import MetronomeComponent from "../Components/MetronomeComponent";
 
 /**
  * Class responsible for the host view. It displays the host controls and the host track.
@@ -78,11 +77,60 @@ export default class HostView {
         // audio loop browser
         this.audioLoopBrowserDiv.appendChild(this.audioLoopBrowserElement);
         this.MetronomeDiv.appendChild(this.MetronomeElement);
-
+        this.setupResizer();
     }
+
+    setupResizer() {
+        const resizer = document.getElementById("resizer") as HTMLDivElement;
+        const audioItem = document.querySelectorAll(".audio-file-item") as NodeListOf<HTMLDivElement>;
+        let isResizing = false;
+        let startDownX = 0;
+
+        resizer.addEventListener('mousedown', (e) => {
+            isResizing = true;
+            startDownX = e.clientX;
+            document.addEventListener('mousemove', handleMouseMove);
+            document.addEventListener('mouseup', stopResize);
+        });
+
+        const handleMouseMove = (e: { clientX: number; }) => {
+            if (isResizing) {
+                const diff = startDownX - e.clientX;
+                const currentWidth = this.audioLoopBrowserDiv.offsetWidth;
+                
+                const newWidth = currentWidth + diff;
+                if (newWidth >= 300) {  
+                    this.audioLoopBrowserDiv.style.width = `${newWidth}px`;
+                    (this.audioLoopBrowserElement as AudioLoopBrowser).resizeItems(newWidth);
+                    console.log("width=="+(this.audioLoopBrowserElement as AudioLoopBrowser).resizeItems(newWidth))
+                    startDownX = e.clientX;  
+                }
+                console.log("currentWidth"+currentWidth);
+            }
+           
+        };
+
+        const stopResize = () => {
+            if (isResizing) {
+                document.removeEventListener('mousemove', handleMouseMove);
+                document.removeEventListener('mouseup', stopResize);
+                const finalWidth = this.audioLoopBrowserDiv.offsetWidth;
+                (this.audioLoopBrowserElement as AudioLoopBrowser).resizeItems(finalWidth);
+                isResizing = false;
+            }
+        };
+    }
+    
     toggleAudioLoopBrowser = this.soundLoopBtn.addEventListener("click", () => {
         this.audioLoopBrowserDiv.style.display = this.audioLoopBrowserDiv.style.display === "none" ? "flex" : "none";
     });
+
+    //function to resize the audioLoopBrowserDiv when the window is resized min-width: 300px max-width: 500px , in audioLoopBrowserDiv i have a div id="resizer" to resize the audioLoopBrowserDiv
+    resizeAudioLoopBrowser = window.addEventListener("resize", () => {
+        this.audioLoopBrowserDiv.style.width = "100%";
+        this.audioLoopBrowserDiv.style.height = "100%";
+    });
+
     
     
     public updateMetronomeBtn(metronomeOn: boolean) {
