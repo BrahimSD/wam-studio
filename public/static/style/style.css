@@ -149,7 +149,6 @@ body {
 #audio-loop-browser{
     width: 300px;
     max-width: 500px;
-    display: none;
     position: relative;
     font-size: 12px;
     height: 100%;

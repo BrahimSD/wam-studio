@@ -77,6 +77,7 @@ export default class HostView {
         // audio loop browser
         this.audioLoopBrowserDiv.appendChild(this.audioLoopBrowserElement);
         this.MetronomeDiv.appendChild(this.MetronomeElement);
+        this.audioLoopBrowserDiv.style.display = 'none';
         this.setupResizer();
     }
 
@@ -102,7 +103,6 @@ export default class HostView {
                 if (newWidth >= 300) {  
                     this.audioLoopBrowserDiv.style.width = `${newWidth}px`;
                     (this.audioLoopBrowserElement as AudioLoopBrowser).resizeItems(newWidth);
-                    console.log("width=="+(this.audioLoopBrowserElement as AudioLoopBrowser).resizeItems(newWidth))
                     startDownX = e.clientX;  
                 }
                 console.log("currentWidth"+currentWidth);
@@ -120,12 +120,11 @@ export default class HostView {
             }
         };
     }
-    
+
     toggleAudioLoopBrowser = this.soundLoopBtn.addEventListener("click", () => {
         this.audioLoopBrowserDiv.style.display = this.audioLoopBrowserDiv.style.display === "none" ? "flex" : "none";
     });
 
-    //function to resize the audioLoopBrowserDiv when the window is resized min-width: 300px max-width: 500px , in audioLoopBrowserDiv i have a div id="resizer" to resize the audioLoopBrowserDiv
     resizeAudioLoopBrowser = window.addEventListener("resize", () => {
         this.audioLoopBrowserDiv.style.width = "100%";
         this.audioLoopBrowserDiv.style.height = "100%";
